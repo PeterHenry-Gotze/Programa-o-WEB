@@ -1,0 +1,120 @@
+### =======================================
+### AUTENTICAÇÃO
+### =======================================
+
+### Obter um token JWT (válido por 10 minutos)
+# @name generateToken
+POST http://localhost:3000/auth/token
+Content-Type: application/json
+
+{
+  "apiKey": "123abc-exemplo-api-key-xyz"
+}
+
+### Guardar o token para as próximas requisições
+@token = {{generateToken.response.body.token}}
+
+
+### =======================================
+### ROTAS DE FILMES
+### =======================================
+
+### Listar todos os filmes (sucesso)
+GET http://localhost:3000/filmes
+Authorization: Bearer {{token}}
+
+### Listar filmes sem token (erro 401)
+GET http://localhost:3000/filmes
+
+### Obter filme com ID 1 (sucesso)
+GET http://localhost:3000/filmes/1
+Authorization: Bearer {{token}}
+
+### Obter filme com ID 99 (erro 404)
+GET http://localhost:3000/filmes/99
+Authorization: Bearer {{token}}
+
+### Cadastrar novo filme (sucesso - 201 Created)
+POST http://localhost:3000/filmes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "titulo": "Interestelar",
+  "diretor": "Christopher Nolan",
+  "ano": 2014,
+  "genero": "Ficção Científica",
+  "duracao_minutos": 169,
+  "nota_imdb": 8.6
+}
+
+### Cadastrar filme com dados inválidos (erro 400)
+POST http://localhost:3000/filmes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "titulo": "Filme sem ano",
+  "diretor": "Desconhecido",
+  "genero": "Teste",
+  "duracao_minutos": -10,
+  "nota_imdb": 11
+}
+
+### Atualizar filme com ID 2 (sucesso)
+PUT http://localhost:3000/filmes/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "titulo": "Pulp Fiction - Tempo de Violência",
+  "diretor": "Quentin Tarantino",
+  "ano": 1994,
+  "genero": "Crime/Drama",
+  "duracao_minutos": 154,
+  "nota_imdb": 8.9
+}
+
+### Remover filme com ID 1 (sucesso)
+DELETE http://localhost:3000/filmes/1
+Authorization: Bearer {{token}}
+
+### =======================================
+### ROTAS DE DIRETORES
+### =======================================
+
+### Listar todos os diretores (sucesso)
+GET http://localhost:3000/diretores
+Authorization: Bearer {{token}}
+
+### Obter diretor com ID 1 (sucesso)
+GET http://localhost:3000/diretores/1
+Authorization: Bearer {{token}}
+
+### Cadastrar novo diretor (sucesso)
+POST http://localhost:3000/diretores
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Martin Scorsese",
+  "pais_origem": "Estados Unidos",
+  "ano_nascimento": 1942,
+  "quantidade_filmes": 26
+}
+
+### Atualizar diretor com ID 1 (sucesso)
+PUT http://localhost:3000/diretores/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Francis Ford Coppola",
+  "pais_origem": "Estados Unidos",
+  "ano_nascimento": 1939,
+  "quantidade_filmes": 22
+}
+
+### Remover diretor com ID 2 (sucesso)
+DELETE http://localhost:3000/diretores/2
+Authorization: Bearer {{token}}
